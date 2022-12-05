@@ -1,0 +1,14 @@
+{
+    "name": "RS OPT APP",
+    "short_name": "My OPT App",
+    "start_url": "index.html",
+    "icons": [{
+        "src": "img/launcher.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    }],
+    "background_color": "#fff",
+    "theme_color": "#302d29",
+    "display": "standalone",
+    "orientation": "portrait"
+}

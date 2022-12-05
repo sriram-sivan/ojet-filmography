@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <title>OPT Offline Persistence Toolkit @ IL-DCEO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./img/favicon.ico" />
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+    <link rel="apple-touch-icon" href="img/launcher.png"/>
+</head>
+
+<body>
+
+    <div class="oj-web-applayout-content-nopad oj-web-spacing oj-web-applayout-max-width" role="main">
+        <div id="content" class="oj-web-padding">
+            <div id="mainWrapper">
+                <!-- jet components here -->
+
+                <div id="syncProgressDialog">
+                    <oj-dialog id="modalDialogSyncProgress" dialog-title="Synchronization" cancel-behavior="[[dialogCancelBehaviorOpt]]">
+                        <oj-progress-bar class="oj-progress-bar-embedded" value="-1"></oj-progress-bar>
+                        <div slot="body">
+                            Synchronizing...Please wait...
+                          </div>
+                        <div slot="footer">
+                            <!-- nothing -->
+                        </div>
+                    </oj-dialog>
+                </div>
+
+                <div id="newActorDialog">
+                    <oj-dialog id="modalDialogNewActor" dialog-title="New Actor" cancel-behavior="[[dialogCancelBehaviorOpt]]">
+                        <div slot="body">
+                            <div id="newActorForm" class="oj-sm-padding-4x-top">
+                                <oj-form-layout direction="row" max-columns="1">
+                                    <oj-input-text value="{{actorNameVal}}" label-hint="Name"></oj-input-text>
+                                </oj-form-layout>
+                            </div>
+                        </div>
+                        <div slot="footer">
+                            <oj-button id="createActorButton" on-oj-action="[[createNewActor]]" chroming="danger">Create</oj-button>
+                            <oj-button id="closeButtonNewActor" on-oj-action="[[closeNewActorModal]]" chroming="callToAction">Close</oj-button>
+                        </div>
+                    </oj-dialog>
+                </div>
+                    
+                <div id="newFilmDialog">
+                    <oj-dialog id="modalDialogNewFilm" dialog-title="New Film" cancel-behavior="[[dialogCancelBehaviorOpt]]">
+                        <div slot="body">
+                            <div id="newFilmForm" class="oj-sm-padding-4x-top">
+                                <oj-form-layout direction="row" max-columns="1">
+                                    <oj-input-text value="{{filmTitleVal}}" label-hint="Title"></oj-input-text>
+                                    <oj-select-single id="select1" label-hint="Select a Genre!" label-edge="inside"
+                                        class="oj-form-control-max-width-md" data="[[dataProviderGenres]]" value="{{filmGenreVal}}">
+                                    </oj-select-single>
+                                </oj-form-layout>
+                            </div>
+                        </div>
+                        <div slot="footer">
+                            <oj-button id="createFilmButton" on-oj-action="[[createNewFilm]]" chroming="danger">Create
+                            </oj-button>
+                            <oj-button id="closeButtonNewFilm" on-oj-action="[[closeNewFilmModal]]" chroming="callToAction">Close</oj-button>
+                        </div>
+                    </oj-dialog>
+                </div>
+
+                <div id="editFilmDialog">
+                    <oj-dialog id="modalDialogEditFilm" dialog-title="Edit Film" cancel-behavior="[[dialogCancelBehaviorOpt]]">
+                        <div slot="body">
+                            <div id="editFilmForm" class="oj-sm-padding-4x-top">
+                                <oj-form-layout direction="row" max-columns="1">
+                                    <oj-input-text value="{{filmTitleVal}}" label-hint="Title"></oj-input-text>
+                                    <oj-select-single id="select2" label-hint="Select a Genre!" label-edge="inside"
+                                        class="oj-form-control-max-width-md" data="[[dataProviderGenres]]" value="{{filmGenreVal}}">
+                                    </oj-select-single>
+                                </oj-form-layout>
+                            </div>
+                        </div>
+                        <div slot="footer">
+                            <oj-button id="editFilmButton" on-oj-action="[[editFilm]]" chroming="danger">Edit</oj-button>
+                            <oj-button id="closeButtonEditFilm" on-oj-action="[[closeEditFilmModal]]" chroming="callToAction">Close</oj-button>
+                        </div>
+                    </oj-dialog>
+                </div>
+
+                <div id="newActorFilmMapDialog">
+                    <oj-dialog id="modalDialogNewActorFilmMap" dialog-title="New Actor Film Map" cancel-behavior="[[dialogCancelBehaviorOpt]]">
+                        <div slot="body">
+                            <div id="newActorFilmMap" class="oj-sm-padding-4x-top">
+                                <oj-form-layout direction="row" max-columns="1">
+                                    <oj-select-single id="selectActor" label-hint="Select an Actor!" label-edge="inside"
+                                        class="oj-form-control-max-width-md" data="[[dataProviderActors]]" value="{{filmActorVal}}">
+                                    </oj-select-single>
+                                    <oj-select-single id="selectFilm" label-hint="Select a Film!" label-edge="inside"
+                                    class="oj-form-control-max-width-md" data="[[dataProviderFilms]]" value="{{filmTitleVal}}">
+                                </oj-select-single>
+                                </oj-form-layout>
+                            </div>
+                        </div>
+                        <div slot="footer">
+                            <oj-button id="createActorFilmMapButton" on-oj-action="[[createNewActorFilmMap]]" chroming="danger">Create
+                            </oj-button>
+                            <oj-button id="closeModalDialogNewActorFilmMap" on-oj-action="[[closeModalDialogNewActorFilmMap]]" chroming="callToAction">Close</oj-button>
+                        </div>
+                    </oj-dialog>
+                </div>
+
+                <div id="accordion" data-oj-binding-provider="none">
+                    <oj-accordion id="a1" multiple>
+                        <oj-collapsible id="c1">
+                            <h3 slot="header"><span class="oj-ux-ico-user-available oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>Actors</h3>
+
+                            <oj-button id="buttonActors" on-oj-action="[[getActors]]" chroming="callToAction">Get Actors</oj-button>
+
+                            <oj-table id="tableActors" data="[[dataProviderActors]]" translations.msg-initializing="Waiting..." 
+                                columns='[{"headerText": "ID", "field": "id"},
+                                          {"headerText": "Name", "field": "name"}]'>            
+                            </oj-table>
+
+                            <oj-button id="buttonActorsCreate" on-oj-action="[[createActor]]" chroming="danger">Create Actor</oj-button>                            <br/>
+                            <div id="actorCount"><oj-bind-text value="[[actorCount]]"></oj-bind-text></div>
+
+                        </oj-collapsible>
+
+                        <oj-collapsible id="c2">
+                            <h3 slot="header"><span class="oj-ux-ico-video-on oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>Films</h3>
+
+                            <oj-collapsible id="innerCollapsible">
+                                <h7 slot="header"><span class="oj-ux-ico-filter-search oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>Film Filtering</h7>
+                                <div>
+                                    <oj-form-layout id="search-information" direction="row" max-columns="2">
+                                        <oj-input-text id="src-input" value="{{titleSearchValue}}" raw-value="{{titleSearchRawValue}}" label-hint="Title" label-edge="inside">
+                                        </oj-input-text>
+                                        <oj-button id="searchButton" on-oj-action="[[searchFilmsByTitle]]">Search by Title ONLY</oj-button>
+                                    </oj-form-layout>
+                                    <oj-form-layout id="search-information-2" direction="row" max-columns="2">
+                                        <oj-input-number id="limit-input" value="{{limitSearchValue}}" label-hint="step 1 enabled" min="0" max="500" step="1"></oj-input-number>
+                                        <oj-button id="limitButton" on-oj-action="[[searchFilmsByLimit]]">Limit</oj-button>
+                                    </oj-form-layout>
+                                    <oj-form-layout id="search-information-3" direction="row" max-columns="2">
+                                        <oj-input-number id="startindex-input" value="{{offsetSearchValue}}" label-hint="step 1 enabled" min="0" max="100" step="1"></oj-input-number>
+                                        <oj-button id="offsetButton" on-oj-action="[[searchFilmsByLimit]]">Offset</oj-button>
+                                    </oj-form-layout>
+
+                                    <oj-button id="searchAndlimitButton" on-oj-action="[[searchFilmsByTitleAndLimit]]">Query using BOTH Title and Limit/Offset (StartIndex)</oj-button>
+                                    <br/><br/>
+                                    <div id="searchParam"></div>
+                                </div>
+                            </oj-collapsible>
+
+                            <br/>
+
+                            <oj-button id="buttonFilms" on-oj-action="[[getFilms]]" chroming="callToAction">
+                                <span>Get All Films</span>
+                            </oj-button>
+                            
+                            <oj-table id="tableFilms" data='[[dataProviderFilms]]' columns-default.sortable='disabled'translations.msg-initializing="Waiting..." 
+                                columns='[{"headerText": "ID", "field": "id"},
+                                          {"headerText": "Title", "field": "title"},
+                                          {"headerText": "Genre", "field": "genre"},                            
+                                          {"headerText": "Action",
+                                           "headerStyle": "text-align: center;",
+                                           "frozenEdge": "end",
+                                           "style":"text-align: center; padding-top: 0px; padding-bottom: 0px;",
+                                           "template": "actionTemplate"
+                                          }]'>
+                                <template slot="actionTemplate" data-oj-as="cell">
+                                    <oj-menu-button chroming="borderless" display="icons" data-oj-clickthrough="disabled">Action
+                                        <oj-menu slot="menu" on-oj-menu-action="[[filmsActionMenuListener]]">
+                                            <oj-option value="edit" disabled="[[cell.row.Status === 'Approved']]">
+                                                <span class="oj-ux-ico-add-edit-page" slot="startIcon"></span>Edit</oj-option>
+                                            <oj-option value="delete">
+                                                <span class="oj-ux-ico-delete-all" slot="startIcon"></span>Delete</oj-option>
+                                        </oj-menu>
+                                    </oj-menu-button>
+                                </template>
+                            </oj-table>
+
+                            <oj-button id="buttonFilmsCreate" on-oj-action="[[createFilm]]" chroming="danger">Create Film</oj-button>
+                            <br/>
+                            <div id="filmCount"><oj-bind-text value="[[filmCount]]"></oj-bind-text></div>
+                        </oj-collapsible>
+
+                        <oj-collapsible id="c5">
+                            <h3 slot="header"><span class="oj-ux-ico-newspaper oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>Genres</h3>
+
+                            <oj-button id="getGenres" on-oj-action="[[getGenres]]" chroming="callToAction">Get Genres</oj-button>
+
+                            <oj-table id="tableGenres" data='[[dataProviderGenres]]' columns-default.sortable='disabled'translations.msg-initializing="Waiting..." 
+                                columns='[{"headerText": "DispSeq", "field": "id"},
+                                          {"headerText": "Code", "field": "code"}]'>
+                            </oj-table>
+
+                        </oj-collapsible>
+
+                        <oj-collapsible id="c9">
+                            <h3 slot="header"><span class="oj-ux-ico-map oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>Actor Film Map</h3>
+                            <oj-collapsible id="innerCollapsible">
+                                <h7 slot="header"><span class="oj-ux-ico-filter-search oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>ActorFilm Query</h7>
+                                <div>
+                                    <oj-checkboxset label-hint="Use Query" label-edge="inside" value="{{filmActorUseQuery}}">
+                                        <oj-option value="usequery">Use Query</oj-option>
+                                    </oj-checkboxset>
+                                    <div class="oj-sm-margin-3x-vertical">
+                                        <oj-label-value>
+                                            <oj-label slot="label">Current component value is</oj-label>
+                                            <span slot="value">
+                                            <oj-bind-text value="[[filmActorUseQuery]]"></oj-bind-text>
+                                            </span>
+                                        </oj-label-value>
+                                    </div>
+                            
+                                    <oj-input-text label-hint="Query Predicate" value="{{filmActorQueryString}}"></oj-input-text>
+
+<!--                                    <oj-button id="actorFilmQuery" on-oj-action="[[queryActorFilms]]">Query ActorFilm objects with ?q= query predicate</oj-button> -->
+
+                                </div>
+                            </oj-collapsible><br/>
+
+                            <oj-button id="getActorFilmMap" on-oj-action="[[getActorFilmMap]]" chroming="callToAction">Get ActorFilmMap</oj-button>
+
+                            <oj-table id="tableActorFilmMap" data='[[dataProviderActorFilmMap]]' columns-default.sortable='disabled'translations.msg-initializing="Waiting..." 
+                                columns='[{"headerText": "ID", "field": "id"},
+                                          {"headerText": "Actor", "field": "actor"},
+                                          {"headerText": "Film", "field": "film"}]'>
+                            </oj-table>
+
+                            <oj-button id="buttonActorFilmMap" on-oj-action="[[openModalDialogNewActorFilmMap]]" chroming="danger">Create Actor Film Map</oj-button>
+
+                        </oj-collapsible>
+
+
+
+                        <oj-collapsible id="c4">
+                            <h3 slot="header"><span class="oj-ux-ico-sync oj-ux-icon-size-5x oj-sm-padding-2x-end"></span>Synchronization</h3>
+                            <oj-button id="getSyncLogButton" on-oj-action="[[getSyncLog]]">Get Sync Log</oj-button>
+                            <oj-button id="removeGetsFromSyncLogButton" on-oj-action="[[removeGetsFromSyncLog]]" chroming="callToAction">Remove GETs from Sync Log</oj-button>
+                            <oj-button id="syncButton" on-oj-action="[[doSyncChanges]]" chroming="danger">Sync Offline Changes</oj-button>
+                            <div id="syncLogInfo"><oj-bind-text value="[[syncLogInfo]]"></oj-bind-text></div>
+                            <br/>
+                            <div id="syncLog"></div>
+                        </oj-collapsible>
+                    </oj-accordion>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="networkStatus">
+        NETWORK STATUS PENDING
+    </div>
+
+    <!-- RequireJS bootstrap file -->
+    <script data-main="js/main" src="https://static.oracle.com/cdn/jet/11.1.9/3rdparty/require/require.js"></script>
+    <!-- Bundles configuration script -->
+    <script src="https://static.oracle.com/cdn/jet/11.1.9/default/js/bundles-config.js"></script>
+
+    <script src="swinit.js"></script>
+</body>
+</html>
